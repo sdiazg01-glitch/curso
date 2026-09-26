@@ -1,0 +1,52 @@
+using Microsoft.AspNetCore.Mvc;
+using ContractTracking.Data;
+using ContractTracking.Models;
+
+namespace ContractTracking.Controllers
+{
+    [Route("[controller]")]
+    public class ContratosController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public ContratosController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        [Route("")]
+        [Route("Index")]
+        public IActionResult Index()
+        {
+            var contratos = _context.Contratos
+                .OrderBy(c => c.FechaFin)
+                .ToList();
+
+            return View(contratos);
+        }
+
+        [HttpGet]
+        [Route("Create")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("Create")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Contrato contrato)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(contrato);
+            }
+
+            _context.Contratos.Add(contrato);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

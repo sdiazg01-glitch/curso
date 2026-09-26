@@ -1,0 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+using ContractTracking.Models;
+
+namespace ContractTracking.Data
+{
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<Contrato> Contratos { get; set; } = null!;
+        public DbSet<Seguimiento> Seguimientos { get; set; } = null!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Contrato>()
+                .HasMany(c => c.Seguimientos)
+                .WithOne()
+                .HasForeignKey(s => s.ContratoId);
+
+            base.OnModelCreating(modelBuilder);
+        }
+    }
+}

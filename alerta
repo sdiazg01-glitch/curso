@@ -1,0 +1,10 @@
+var fechaInicio = DateTime.Today;
+var fechaFin = fechaInicio.AddDays(30);
+
+var contratosPorVencer = _context.Contratos
+    .AsNoTracking()
+    .Where(c => c.Estado == "Activo"
+        && c.FechaFin.Date >= fechaInicio
+        && c.FechaFin.Date <= fechaFin)
+    .OrderBy(c => c.FechaFin)
+    .ToList();
